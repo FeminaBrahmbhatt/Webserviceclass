@@ -8,12 +8,15 @@
 #import "WebServicesClass.h"
 #import "AppDelegate.h"
 #import "Reachability.h"
+#define SHARED_APPDELEGATE [[UIApplication sharedApplication] delegate]
+
 @implementation WebServicesClass
 
 static WebServicesClass* _sharedWebServiceCom = nil;
 
 + (WebServicesClass *) sharedWebServiceClass
 {
+    
     @synchronized([WebServicesClass class])
     {
         if (!_sharedWebServiceCom)
@@ -29,7 +32,7 @@ static WebServicesClass* _sharedWebServiceCom = nil;
     if (self != nil) {
         
         // initialize stuff here
-        _HUD = [[MBProgressHUD alloc]initWithWindow:[SHARED_APPDELEGATE window]];
+        _HUD = [[MBProgressHUD alloc]init];
         
         [[SHARED_APPDELEGATE window] addSubview:_HUD];
         _HUD.label.text = @"Please wait";
@@ -39,9 +42,9 @@ static WebServicesClass* _sharedWebServiceCom = nil;
 
 #pragma mark - POST method
 
--(void)JsonCallWithImage:(NSData *)imageData withfieldName:(NSString *)strfieldName andParameters:(NSDictionary *)param WitCompilation :(void (^)(NSMutableDictionary *, NSError *))completion
+-(void)JsonCallWithImage:(NSData *)imageData inview:(UIView*)view withfieldName:(NSString *)strfieldName andParameters:(NSDictionary *)param WitCompilation :(void (^)(NSMutableDictionary *, NSError *))completion
 {
-    if (connected) {
+    if ([self connected]) {
         //NSError *error;
         NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
         NSURLSession *session = [NSURLSession sessionWithConfiguration:configuration delegate:nil delegateQueue:nil];
@@ -99,7 +102,7 @@ static WebServicesClass* _sharedWebServiceCom = nil;
         
         //_HUD.label.text =@"Uploading Image";
         
-        [self ShowProgressHUD];
+        [self ShowProgressHUD:view];
         
         NSURLSessionDataTask *postDataTask = [session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error)
                                               {
@@ -133,9 +136,9 @@ static WebServicesClass* _sharedWebServiceCom = nil;
         
     }
 }
--(void)JsonCall:(NSDictionary *)dicData WitCompilation:(void (^)(NSMutableDictionary *Dictionary,NSError *error))completion
+-(void)JsonCall:(NSDictionary *)dicData inview:(UIView*)view WitCompilation:(void (^)(NSMutableDictionary *Dictionary,NSError *error))completion
 {
-    if (connected) {
+    if ([self connected]) {
         NSError *error;
         
         NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
@@ -160,7 +163,7 @@ static WebServicesClass* _sharedWebServiceCom = nil;
         NSData *postData = [NSJSONSerialization dataWithJSONObject:mapData options:0 error:&error];
         [request setHTTPBody:postData];
         
-        [self ShowProgressHUD];      // Show MBProgressHUD
+        [self ShowProgressHUD:view];      // Show MBProgressHUD
         
         NSURLSessionDataTask *postDataTask = [session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error)
                                               {
@@ -198,9 +201,9 @@ static WebServicesClass* _sharedWebServiceCom = nil;
 
 #pragma mark - GET method
 
--(void)JsonCallGET:(NSString *)urlString WitCompilation:(void (^)(NSMutableDictionary *Dictionary))completion
+-(void)JsonCallGET:(NSString *)urlString inview:(UIView*)view WitCompilation:(void (^)(NSMutableDictionary *Dictionary))completion
 {
-    if (connected) {
+    if ([self connected]) {
         NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
         NSURLSession *session = [NSURLSession sessionWithConfiguration:configuration delegate:nil delegateQueue:nil];
         
@@ -243,10 +246,10 @@ static WebServicesClass* _sharedWebServiceCom = nil;
         [_HUD hideAnimated:YES];
     });
 }
--(void)ShowProgressHUD
+-(void)ShowProgressHUD:(UIView*)view
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        
+        _HUD = [_HUD initWithView:view];
         [_HUD showAnimated:YES];
     });
 }
@@ -277,15 +280,8 @@ static WebServicesClass* _sharedWebServiceCom = nil;
 
 - (BOOL)connected
 {
-    Reachability *reach = [Reachability reachabilityForInternetConnection];
-    
-    if ([reach isReachable]) {
-        NSLog(@"Device is connected to the internet");
-        return TRUE;
-    }
-    else {
-        NSLog(@"Device is not connected to the internet");
-        return FALSE;
-    }
+    Reachability *reachability = [Reachability reachabilityForInternetConnection];
+    NetworkStatus networkStatus = [reachability currentReachabilityStatus];
+    return networkStatus != NotReachable;
 }
 @end

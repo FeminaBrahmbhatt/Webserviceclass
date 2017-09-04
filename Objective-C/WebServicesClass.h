@@ -5,7 +5,7 @@
 //  Copyright © 2016 Femina Rajesh Brahmbhatt. All rights reserved.
 //
 
-#define urlBase @"http://192.168.0.128/i_gotcha/"    // Local API Baseurl
+#define urlBase @"your url"    // Local API Baseurl
 
 #import <Foundation/Foundation.h>
 #import "AppDelegate.h"
@@ -18,15 +18,15 @@
 + (WebServicesClass *) sharedWebServiceClass;
 
 // API calling POST method
--(void)JsonCall:(NSDictionary *)dicData ClassURL:(NSString *)urlClass WitCompilation:(void (^)(NSMutableDictionary *Dictionary,NSError *error))completion;
+-(void)JsonCall:(NSDictionary *)dicData inview:(UIView*)view WitCompilation:(void (^)(NSMutableDictionary *Dictionary,NSError *error))completion;
 
 // API calling GET method
--(void)JsonCallGET:(NSString *)urlString WitCompilation:(void (^)(NSMutableDictionary *Dictionary))completion;
+-(void)JsonCallGET:(NSString *)urlString inview:(UIView*)view WitCompilation:(void (^)(NSMutableDictionary *Dictionary))completion;
 
 // API calling Image uplaoding "FormData" request POST
--(void)JsonCallWithImage:(NSData *)imageData withfieldName:(NSString *)strfieldName ClassURL:(NSString *)urlClass WitCompilation:(void (^)(NSMutableDictionary *Dictionary,NSError *error))completion;
+-(void)JsonCallWithImage:(NSData *)imageData inview:(UIView*)view withfieldName:(NSString *)strfieldName andParameters:(NSDictionary *)param WitCompilation :(void (^)(NSMutableDictionary *, NSError *))completion;
 
 // Indicator
 -(void)HideProgressHUD;
--(void)ShowProgressHUD;
+-(void)ShowProgressHUD:(UIView*)view;
 @end

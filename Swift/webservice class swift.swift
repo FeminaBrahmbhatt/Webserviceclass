@@ -8,7 +8,7 @@
 //<dict>
 //<key>NSExceptionDomains</key>
 //<dict>
-//<key>aeinfraproject.com</key>
+//<key>domain here</key>
 //<dict>
 //<key>NSAllowsArbitraryLoads</key>
 //<true/>
@@ -28,7 +28,8 @@ class webserviceclassswift{
     static let sharedinstance = webserviceclassswift()
     var _HUD = MBProgressHUD()
     typealias CompletionHandler = (_ dictionary:NSDictionary?,_ error:Error?) -> Void
-
+    let baseurl = ""
+    
 // MARK:- GET method
 
 
@@ -42,7 +43,7 @@ class webserviceclassswift{
             config = URLSessionConfiguration.default
             urlSession = URLSession(configuration: config)
             
-            let callURL = URL.init(string: "https://itunes.apple.com/in/rss/newapplications/limit=10/json")
+            let callURL = URL.init(string: baseurl)
             
             let request:NSMutableURLRequest = URLRequest.init(url: callURL!, cachePolicy: URLRequest.CachePolicy.reloadIgnoringCacheData, timeoutInterval: 60.0) as! NSMutableURLRequest
             
@@ -94,7 +95,7 @@ class webserviceclassswift{
             config = URLSessionConfiguration.default
             urlSession = URLSession(configuration: config)
             
-            let callURL = URL.init(string: "http://aeinfraproject.com/littr/api.php")
+            let callURL = URL.init(string: baseurl)
             
             let request:NSMutableURLRequest = URLRequest.init(url: callURL!, cachePolicy: URLRequest.CachePolicy.reloadIgnoringCacheData, timeoutInterval: 60.0) as! NSMutableURLRequest
             
@@ -156,7 +157,7 @@ class webserviceclassswift{
         
             urlSession = URLSession(configuration: config)
         
-            let url = URL.init(string: "https://itunes.apple.com/in/rss/newapplications/limit=10/json")
+            let url = URL.init(string: baseurl)
         
             let BoundaryConstant = "----------V2ymHFg03ehbqgZCaKO6jy"
         
